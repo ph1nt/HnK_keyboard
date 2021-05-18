@@ -2,6 +2,7 @@
 Comfortable keyboard (RP2040 python firmware)
 
 This project base on https://github.com/makerdiary/python-keyboard and https://github.com/KMKfw/kmk_firmware
+Hardware inspired ![Dactyl]https://hackaday.io/project/171793-yet-another-dactyl-build and ![ErgoDox]https://hackaday.com/2020/06/02/inputs-of-interest-ergodox-post-mortem/
 
 ## So many good keyboards out there, but none meet all my needs.
 ###  My #kbd wish list
@@ -16,6 +17,10 @@ This project base on https://github.com/makerdiary/python-keyboard and https://g
   - many layers
   - tap / hold actions
   - macros
+- mouse emulation
+  - keys
+  - analog joystick
+  - 3D mouse
 
 Raspberry Pi Pico with RP2040 ARM base microcontroler looks perfect for this project.
 
