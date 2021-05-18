@@ -2,7 +2,8 @@
 Comfortable keyboard (RP2040 python firmware)
 
 This project base on https://github.com/makerdiary/python-keyboard and https://github.com/KMKfw/kmk_firmware
-Hardware inspired ![Dactyl]https://hackaday.io/project/171793-yet-another-dactyl-build and ![ErgoDox]https://hackaday.com/2020/06/02/inputs-of-interest-ergodox-post-mortem/
+
+Hardware inspiration [Dactyl](https://hackaday.io/project/171793-yet-another-dactyl-build) and [ErgoDox](https://hackaday.com/2020/06/02/inputs-of-interest-ergodox-post-mortem/)
 
 ## So many good keyboards out there, but none meet all my needs.
 ###  My #kbd wish list
