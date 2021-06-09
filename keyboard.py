@@ -100,25 +100,26 @@ def do_nothing(*_args, **_kargs):
 
 
 class kbdc:
-    def __init__(self, row_pins, col_pins, diode=True):
+    def __init__(self, row_pins, col_pins, diode, _pairs):
         def convert(a):
             return array.array("L", (k for k in a))  # 4 bytes
         self.verbose = 1  # verbose
-        self.pairs = ()
+        self.pairs = _pairs
         self.pairs_handler = do_nothing
         self.pair_keys = set()
+        for pair in self.pairs:
+            for key in pair:
+                print('pair key:{}'.format(key))
+                self.pair_keys.add(key)
+        print(self.pair_keys)
         self.macro_handler = do_nothing
         self.layer_mask = 1
         self.matrix = Matrix(row_pins, col_pins, diode)
         self.tap_delay = 500
         self.fast_type_thresh = 200
-        self.pair_delay = 10
+        self.pair_delay = 50
         self.adv_timeout = None
         self.actionmap = tuple(convert(layer) for layer in keymap)
-        print(self.actionmap)
-        for pair in self.pairs:
-            for key in pair:
-                self.pair_keys.add(key)
         matrix = self.matrix
         self.keys = [0] * matrix.keys
         self.last_time = 0
@@ -245,11 +246,13 @@ class kbdc:
         if self.pair_keys:
             # detecting pair keys
             if n == 1:
+                print('pair n == 1')
                 key = self.matrix.view(0)
                 if key < 0x800000 and key in self.pair_keys:
                     n = self.matrix.wait(self.pair_delay - self.matrix.timems(self.matrix.time() -
                                          self.matrix.get_keydown_time(key)))
             if n >= 2:
+                print('pair n >= 2')
                 pair = {self.matrix.view(0), self.matrix.view(1)}
                 if pair in self.pairs:
                     pair_index = self.pairs.index(pair)
