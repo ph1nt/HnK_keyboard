@@ -2,8 +2,6 @@
 import supervisor
 # pylint: disable=import-error
 from keyboard import layout
-
-
 class macros:
     keyboard = object
 
@@ -20,11 +18,11 @@ class macros:
                 layout.write('}')
 
     def pairs_handler(self, _n):
-        layout.write('You just triggered pair keys #{}\n'.format(_n))
-        if _n == 0:  # TAB + SPAPCE soft reboot
+        # layout.write('You just triggered pair keys #{}\n'.format(_n))
+        if _n == 0:  # TAB + SPAPCE, soft reboot
             print('SOFT REBOOT by key pairs: Tab + Shift')
             supervisor.reload()
-        elif _n == 1:  # 1 + 6
+        elif _n == 1:  # 1 + 6, default layer
             self.keyboard.layer_mask = 1
         else:
             print('wrong pairs index: {}'.format(_n))

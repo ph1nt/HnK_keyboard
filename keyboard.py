@@ -57,27 +57,25 @@ def mods_to_keycodes(mods):
 class analogMouse:
     def __init__(self, _km) -> None:
         self.km = _km
-        self.x_axis = analogio.AnalogIn(board.A0)
-        self.y_axis = analogio.AnalogIn(board.A1)
+        self.x_axis = analogio.AnalogIn(board.A1)
+        self.y_axis = analogio.AnalogIn(board.A0)
         self.x0 = 0
-        for _n in range(5):
-            self.x0 += self.get_voltage(self.x_axis)
-        self.x0 = self.x0 / 5
         self.y0 = 0
         for _n in range(5):
+            self.x0 += self.get_voltage(self.x_axis)
             self.y0 += self.get_voltage(self.y_axis)
-        self.y0 = self.y0 / 5
-        self.deadZoneSize = 0.5
-        pot_min = 0.00
-        pot_max = 3.29
-        self.step = (pot_max - pot_min) / 20.0
+            time.sleep(0.2)
+        self.x0 = round(self.x0 / 5)
+        self.y0 = round(self.y0 / 5)
+        self.deadZoneSize = 256
+        self.step = 65536 / 40
 
     def get_voltage(self, pin):
-        return (pin.value * 3.3) / 65536
+        return pin.value
 
     def steps(self, axis, deadPoint):
         """ Maps the potentiometer voltage range to 0-20 """
-        tmp = deadPoint - axis
+        tmp = axis - deadPoint
         if abs(tmp) > self.deadZoneSize:
             return round(tmp / self.step)
         return 0
@@ -109,7 +107,6 @@ class kbdc:
         self.pair_keys = set()
         for pair in self.pairs:
             for key in pair:
-                print('pair key:{}'.format(key))
                 self.pair_keys.add(key)
         print(self.pair_keys)
         self.macro_handler = do_nothing
@@ -265,15 +262,13 @@ class kbdc:
             event = self.get()
             print('event:{} up:{}'.format(event & 0x7fffff, (event & 0x800000 != 0)))
             key = event & 0x7fffff
-            if event & 0x800000 == 0:
+            if event & 0x800000 == 0:  # pressed key
                 action_code = self.action_code(key)
-                print('action_code:{:06x}'.format(action_code))
                 self.keys[key] = action_code
                 if action_code <= 0xFF:
                     self.press(action_code)
                 else:
                     kind = action_code >> 16
-                    print('kind:{:02x}'.format(kind))
                     if kind < ACT_MODS_TAP:
                         # MODS
                         mods = (action_code >> 8) & 0x1F
@@ -284,13 +279,13 @@ class kbdc:
                     elif kind < ACT_USAGE:
                         # MODS_TAP
                         if self.is_tapping_key(key):
-                            print('is_tapping_key')
                             keycode = action_code & 0xFF
                             self.keys[key] = keycode
                             self.press(keycode)
+                            print('is_tapping_key keycode: {:06x}'.format(keycode))
                         else:
                             mods = (action_code >> 8) & 0xFF
-                            print('not_tapping_key mods:{:02x}'.format(mods))
+                            print('not_tapping_key mods:{:06x}'.format(mods))
                             keycodes = mods_to_keycodes(mods)
                             self.press(*keycodes)
                     elif kind == ACT_USAGE:
@@ -308,6 +303,7 @@ class kbdc:
                         if action_code & 0xE0 == 0xC0:
                             mods = action_code & 0x1F
                             keycodes = mods_to_keycodes(mods)
+                            print('ACT_LAYER_TAP mods:{} keycodes:{}'.format(mods, *keycodes))
                             self.press(*keycodes)
                             self.layer_mask |= mask
                         elif self.is_tapping_key(key):
@@ -324,23 +320,12 @@ class kbdc:
                         if callable(self.macro_handler):
                             i = action_code & 0xFFF
                             self.macro_handler(i, True)
-                if self.verbose:
-                    keydown_time = self.matrix.get_keydown_time(key)
-                    self.dt = 0
-                    self.dt2 = 0
-                    try:
-                        self.dt = self.matrix.timems(self.matrix.time() - keydown_time)
-                        self.dt2 = self.matrix.timems(keydown_time - self.last_time)
-                    except OverflowError:
-                        print("An exception flew by!")
-                    finally:
-                        self.last_time = keydown_time
             else:
                 action_code = self.keys[key]
                 if action_code < 0xFF:
                     self.release(action_code)
                 else:
-                    kind = action_code >> 12
+                    kind = action_code >> 16
                     if kind < ACT_MODS_TAP:
                         # MODS
                         mods = (action_code >> 8) & 0x1F
@@ -372,17 +357,6 @@ class kbdc:
                     elif kind == ACT_MACRO:
                         i = action_code & 0xFFF
                         self.macro_handler(i, False)
-                if self.verbose:
-                    keyup_time = self.matrix.get_keyup_time(key)
-                    self.dt = 0
-                    self.dt2 = 0
-                    try:
-                        self.dt = self.matrix.timems(self.matrix.time() - keyup_time)
-                        self.dt2 = self.matrix.timems(keyup_time - self.last_time)
-                    except OverflowError:
-                        print("An exception flew by!")
-                    finally:
-                        self.last_time = keyup_time
         if self.mouse_action:
             x, y, wheel = MS_MOVEMENT[mouse_action]
             self.dt = 1 + (time.monotonic_ns() - self.mouse_time) // 2000_000
@@ -391,7 +365,13 @@ class kbdc:
         # analog mouse
         x, y = am.get()
         self.amouse_action = not((x == 0) & (y == 0))
-        if self.layer_mask == 3:
-            self.move_mouse(0, 0, x)
+        if self.layer_mask == 9:
+            self.move_mouse(0, 0, -y // 3)
         else:
+            if self.layer_mask == 3:
+                self.press_mouse(km.MIDDLE_BUTTON)
+                self.press(KC.LSFT)
             self.move_mouse(x, y, 0)
+            if self.layer_mask == 3:
+                self.release_mouse(km.MIDDLE_BUTTON)
+                self.release(KC.LSFT)

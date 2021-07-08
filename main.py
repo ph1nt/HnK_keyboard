@@ -8,7 +8,6 @@
 # pylint: disable=import-error
 import board
 # pylint: enable=import-error
-from log import debug
 from rgb import RGB
 from keyboard import kbdc
 from macro import macros
@@ -19,10 +18,8 @@ if __name__ == "__main__":
     col_pins = (board.GP18, board.GP19, board.GP20, board.GP21, board.GP22, board.GP16, board.GP17,
             board.GP6, board.GP7, board.GP8, board.GP9, board.GP10, board.GP11, board.GP12)
     duets = [{33, 54}, {0, 7}]  # TAB + SPAPCE, 1 + 6
-    debug.set(debug.INFO)
     kbd = kbdc(row_pins, col_pins, True, duets)
     macro = macros(kbd)
-    debug.log(debug.INFO, "starting keyboard")
     while True:
         rgb()
         kbd()
