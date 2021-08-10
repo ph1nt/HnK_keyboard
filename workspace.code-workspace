@@ -11,7 +11,7 @@
         "python.analysis.extraPaths": [
             "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.1.13/boards/0x239A/0x80F4",
             "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.1.13/stubs",
-            "/Users/peter/Library/Application Support/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20210702/adafruit-circuitpython-bundle-py-20210702/lib"
+            "/Users/peter/Library/Application Support/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20210715/adafruit-circuitpython-bundle-py-20210715/lib"
         ],
         "circuitpython.board.version": null,
         "circuitpython.board.vid": "0x239A",
