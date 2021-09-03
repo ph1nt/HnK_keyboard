@@ -1,5 +1,6 @@
 import array
 import time
+
 # pylint: disable=import-error
 import board
 import analogio
@@ -8,6 +9,7 @@ from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.mouse import Mouse
+
 # pylint: enable=import-error
 from matrix import Matrix
 from key_map import keymap
@@ -19,8 +21,8 @@ ACT_MODS_TAP = 0b0010
 ACT_USAGE = 0b0100
 ACT_MOUSEKEY = 0b0101
 ACT_LAYER = 0b1000
-ACT_LAYER_TAP = 0b1010    # Layer  0-15
-ACT_LAYER_TAP_EXT = 0b1011    # Layer 16-31
+ACT_LAYER_TAP = 0b1010  # Layer  0-15
+ACT_LAYER_TAP_EXT = 0b1011  # Layer 16-31
 ACT_MACRO = 0b1100
 ACT_BACKLIGHT = 0b1101
 ACT_COMMAND = 0b1110
@@ -33,14 +35,23 @@ ON_PRESS = 1
 ON_RELEASE = 2
 ON_BOTH = 3
 OP_TAP_TOGGLE = 0xF0
-MS_MOVEMENT = ((0, 0, 0), (0, -2, 0), (0, 2, 0),
-               (-2, 0, 0), (2, 0, 0), (-1, -1, 0),
-               (1, -1, 0), (-1, 1, 0), (1, 1, 0),
-               (0, 0, 1), (0, 0, -1))
+MS_MOVEMENT = (
+    (0, 0, 0),
+    (0, -2, 0),
+    (0, 2, 0),
+    (-2, 0, 0),
+    (2, 0, 0),
+    (-1, -1, 0),
+    (1, -1, 0),
+    (-1, 1, 0),
+    (1, 1, 0),
+    (0, 0, 1),
+    (0, 0, -1),
+)
 
 
 def mods_to_keycodes(mods):
-    """ :return: list(filter(lambda k: mods & (1 << (k & 0x3)), all_mods)) """
+    """:return: list(filter(lambda k: mods & (1 << (k & 0x3)), all_mods))"""
     b = KC.RCTRL
     o = []
     for i in range(4):
@@ -50,7 +61,7 @@ def mods_to_keycodes(mods):
     for i in range(4):
         if (mods >> i) & 1:
             o.append(b + i)
-    print('mods_to_keycodes {}'.format(o))
+    print("mods_to_keycodes {}".format(o))
     return o
 
 
@@ -74,7 +85,7 @@ class analogMouse:
         return pin.value
 
     def steps(self, axis, deadPoint):
-        """ Maps the potentiometer voltage range to 0-20 """
+        """Maps the potentiometer voltage range to 0-20"""
         tmp = axis - deadPoint
         if abs(tmp) > self.deadZoneSize:
             return round(tmp / self.step)
@@ -83,7 +94,7 @@ class analogMouse:
     def get(self):
         x = self.steps(self.get_voltage(self.x_axis), self.x0)
         y = self.steps(self.get_voltage(self.y_axis), self.y0)
-        return(x, y)
+        return (x, y)
 
 
 kb = Keyboard(usb_hid.devices)
@@ -101,6 +112,7 @@ class kbdc:
     def __init__(self, row_pins, col_pins, diode, _pairs):
         def convert(a):
             return array.array("L", (k for k in a))  # 4 bytes
+
         self.verbose = 1  # verbose
         self.pairs = _pairs
         self.pairs_handler = do_nothing
@@ -158,7 +170,10 @@ class kbdc:
         matrix = self.matrix
         n = len(matrix)
         if n == 0:
-            n = matrix.wait(self.tap_delay - matrix.timems(matrix.time() - matrix.get_keydown_time(key)))
+            n = matrix.wait(
+                self.tap_delay
+                - matrix.timems(matrix.time() - matrix.get_keydown_time(key))
+            )
         target = key | 0x800000
         if n >= 1:
             new_key = matrix.view(0)
@@ -176,7 +191,10 @@ class kbdc:
                     print(t)
                 return True
             if n == 1:
-                n = matrix.wait(self.fast_type_thresh - matrix.timems(matrix.time() - matrix.get_keydown_time(new_key)))
+                n = matrix.wait(
+                    self.fast_type_thresh
+                    - matrix.timems(matrix.time() - matrix.get_keydown_time(new_key))
+                )
         if n < 2:
             return False
         if target == matrix.view(1):
@@ -201,7 +219,7 @@ class kbdc:
         for layer in range(len(self.actionmap) - 1, -1, -1):
             if (layer_mask >> layer) & 1:
                 code = self.actionmap[layer][position]
-                print('layer:{} code:{} position:{}'.format(layer, code, position))
+                print("layer:{} code:{} position:{}".format(layer, code, position))
                 if code == 1:  # TRANSPARENT
                     continue
                 return code
@@ -243,25 +261,31 @@ class kbdc:
         if self.pair_keys:
             # detecting pair keys
             if n == 1:
-                print('pair n == 1')
+                print("pair n == 1")
                 key = self.matrix.view(0)
                 if key < 0x800000 and key in self.pair_keys:
-                    n = self.matrix.wait(self.pair_delay - self.matrix.timems(self.matrix.time() -
-                                         self.matrix.get_keydown_time(key)))
+                    n = self.matrix.wait(
+                        self.pair_delay
+                        - self.matrix.timems(
+                            self.matrix.time() - self.matrix.get_keydown_time(key)
+                        )
+                    )
             if n >= 2:
-                print('pair n >= 2')
+                print("pair n >= 2")
                 pair = {self.matrix.view(0), self.matrix.view(1)}
                 if pair in self.pairs:
                     pair_index = self.pairs.index(pair)
                     key1 = self.get()
                     key2 = self.get()
-                    self.dt = self.matrix.timems(self.matrix.get_keydown_time(key2) -
-                                                 self.matrix.get_keydown_time(key1))
+                    self.dt = self.matrix.timems(
+                        self.matrix.get_keydown_time(key2)
+                        - self.matrix.get_keydown_time(key1)
+                    )
                     self.pairs_handler(pair_index)
         while len(self.matrix):
             event = self.get()
-            print('event:{} up:{}'.format(event & 0x7fffff, (event & 0x800000 != 0)))
-            key = event & 0x7fffff
+            print("event:{} up:{}".format(event & 0x7FFFFF, (event & 0x800000 != 0)))
+            key = event & 0x7FFFFF
             if event & 0x800000 == 0:  # pressed key
                 action_code = self.action_code(key)
                 self.keys[key] = action_code
@@ -273,7 +297,9 @@ class kbdc:
                         # MODS
                         mods = (action_code >> 8) & 0x1F
                         keycodes = mods_to_keycodes(mods)
-                        print('ACT_MODS_TAP mods:{}, keycodes:{}'.format(mods, keycodes))  # DEBUG
+                        print(
+                            "ACT_MODS_TAP mods:{}, keycodes:{}".format(mods, keycodes)
+                        )  # DEBUG
                         keycodes.append(action_code & 0xFF)
                         self.press(*keycodes)
                     elif kind < ACT_USAGE:
@@ -282,10 +308,10 @@ class kbdc:
                             keycode = action_code & 0xFF
                             self.keys[key] = keycode
                             self.press(keycode)
-                            print('is_tapping_key keycode: {:06x}'.format(keycode))
+                            print("is_tapping_key keycode: {:06x}".format(keycode))
                         else:
                             mods = (action_code >> 8) & 0xFF
-                            print('not_tapping_key mods:{:06x}'.format(mods))
+                            print("not_tapping_key mods:{:06x}".format(mods))
                             keycodes = mods_to_keycodes(mods)
                             self.press(*keycodes)
                     elif kind == ACT_USAGE:
@@ -303,13 +329,19 @@ class kbdc:
                         if action_code & 0xE0 == 0xC0:
                             mods = action_code & 0x1F
                             keycodes = mods_to_keycodes(mods)
-                            print('ACT_LAYER_TAP mods:{} keycodes:{}'.format(mods, *keycodes))
+                            print(
+                                "ACT_LAYER_TAP mods:{} keycodes:{}".format(
+                                    mods, *keycodes
+                                )
+                            )
                             self.press(*keycodes)
                             self.layer_mask |= mask
                         elif self.is_tapping_key(key):
                             keycode = action_code & 0xFF
                             if keycode == OP_TAP_TOGGLE:
-                                self.layer_mask = (self.layer_mask & ~mask) | (mask & ~self.layer_mask)
+                                self.layer_mask = (self.layer_mask & ~mask) | (
+                                    mask & ~self.layer_mask
+                                )
                                 self.keys[key] = 0
                             else:
                                 self.keys[key] = keycode
@@ -364,7 +396,7 @@ class kbdc:
             self.move_mouse(x * self.dt, y * self.dt, -1 * wheel)
         # analog mouse
         x, y = am.get()
-        self.amouse_action = not((x == 0) & (y == 0))
+        self.amouse_action = not ((x == 0) & (y == 0))
         if self.layer_mask == 9:
             self.move_mouse(0, 0, -y // 3)
         else:
