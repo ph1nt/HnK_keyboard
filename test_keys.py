@@ -8,12 +8,12 @@ KEY_LAYER = 4
 KEY_MODTAP = 5
 
 
-def test(desc=''):
+def test(desc=""):
     for k in keys:
         n, t, m = keys[k]
-        print('{}: {},'.format(k, n))
+        print("{}: {},".format(k, n))
     keys.clear()
-    print('# {}'.format(desc))
+    print("# {}".format(desc))
 
 
 class AttrDict(dict):
@@ -51,13 +51,13 @@ def TT(layer=None):
 def make_key(code=0, names=tuple(), key_type=0, next_key=None):
     """Create a new key, aliased by `names` in the KC lookup table."""
     if not key_type:
-        keys[code] = (names, 'KC.TYPE',  next_key)
+        keys[code] = (names, "KC.TYPE", next_key)
     elif key_type == KEY_CONSUMER:
-        keys[code] = (names, 'KC.CC',  next_key)
+        keys[code] = (names, "KC.CC", next_key)
     elif key_type == KEY_MODIFIER:
-        keys[code] = (names, 'KC.MOD',  next_key)
+        keys[code] = (names, "KC.MOD", next_key)
     elif key_type == KEY_LAYER:
-        keys[code] = (names, 'KC.LL',  next_key)
+        keys[code] = (names, "KC.LL", next_key)
     for name in names:
         KC[name] = code
 
@@ -70,11 +70,11 @@ def make_shifted_key(target_name, names=tuple()):
     return key
 
 
-test('Null keys')
-make_key(0, ('TRNS',))
-make_key(1, ('NO',))
+test("Null keys")
+make_key(0, ("TRNS",))
+make_key(1, ("NO",))
 
-test('Modifiers')
+test("Modifiers")
 make_key(code=224, names=("LEFT_CONTROL", "LCTRL", "LCTL"), key_type=KEY_MODIFIER)
 make_key(code=225, names=("LEFT_SHIFT", "LSHIFT", "LSFT"), key_type=KEY_MODIFIER)
 make_key(code=226, names=("LEFT_ALT", "LALT"), key_type=KEY_MODIFIER)
@@ -84,7 +84,7 @@ make_key(code=229, names=("RIGHT_SHIFT", "RSHIFT", "RSFT"), key_type=KEY_MODIFIE
 make_key(code=230, names=("RIGHT_ALT", "RALT"), key_type=KEY_MODIFIER)
 make_key(code=231, names=("RIGHT_SUPER", "RGUI", "RCMD", "RWIN"), key_type=KEY_MODIFIER)
 
-test('Basic ASCII letters')
+test("Basic ASCII letters")
 make_key(code=4, names=("A",))
 make_key(code=5, names=("B",))
 make_key(code=6, names=("C",))
@@ -112,7 +112,7 @@ make_key(code=27, names=("X",))
 make_key(code=28, names=("Y",))
 make_key(code=29, names=("Z",))
 
-test('Numbers')
+test("Numbers")
 make_key(code=30, names=("1", "N1"))
 make_key(code=31, names=("2", "N2"))
 make_key(code=32, names=("3", "N3"))
@@ -124,7 +124,7 @@ make_key(code=37, names=("8", "N8"))
 make_key(code=38, names=("9", "N9"))
 make_key(code=39, names=("0", "N0"))
 
-test('More ASCII standard keys')
+test("More ASCII standard keys")
 make_key(code=40, names=("ENTER", "ENT", "\n"))
 make_key(code=41, names=("ESCAPE", "ESC"))
 make_key(code=42, names=("BACKSPACE", "BSPC"))
@@ -142,7 +142,7 @@ make_key(code=54, names=("COMMA", ","))
 make_key(code=55, names=("DOT", "."))
 make_key(code=56, names=("SLASH", "SLSH"))
 
-test('Function Keys')
+test("Function Keys")
 make_key(code=58, names=("F1",))
 make_key(code=59, names=("F2",))
 make_key(code=60, names=("F3",))
@@ -168,7 +168,7 @@ make_key(code=113, names=("F22",))
 make_key(code=114, names=("F23",))
 make_key(code=115, names=("F24",))
 
-test('Lock Keys, Navigation, etc.')
+test("Lock Keys, Navigation, etc.")
 make_key(code=57, names=("CAPS_LOCK", "CAPSLOCK", "CAPS"))
 make_key(code=70, names=("PRINT_SCREEN", "PSCREEN", "PSCR"))
 make_key(code=71, names=("SCROLL_LOCK", "SCROLLLOCK", "SLCK"))
@@ -184,7 +184,7 @@ make_key(code=80, names=("LEFT",))
 make_key(code=81, names=("DOWN",))
 make_key(code=82, names=("UP",))
 
-test('Numpad')
+test("Numpad")
 make_key(code=83, names=("NUM_LOCK", "NUMLOCK", "NLCK"))
 make_key(code=84, names=("KP_SLASH", "NUMPAD_SLASH", "PSLS"))
 make_key(code=85, names=("KP_ASTERISK", "NUMPAD_ASTERISK", "PAST"))
@@ -206,7 +206,7 @@ make_key(code=103, names=("KP_EQUAL", "PEQL", "NUMPAD_EQUAL"))
 make_key(code=133, names=("KP_COMMA", "PCMM", "NUMPAD_COMMA"))
 make_key(code=134, names=("KP_EQUAL_AS400", "NUMPAD_EQUAL_AS400"))
 
-test('Shift + whatever key')
+test("Shift + whatever key")
 make_shifted_key("GRAVE", names=("TILDE", "TILD", "~"))
 make_shifted_key("1", names=("EXCLAIM", "EXLM", "!"))
 make_shifted_key("2", names=("AT", "@"))
@@ -229,7 +229,7 @@ make_shifted_key("COMMA", names=("LEFT_ANGLE_BRACKET", "LABK", "<"))
 make_shifted_key("DOT", names=("RIGHT_ANGLE_BRACKET", "RABK", ">"))
 make_shifted_key("SLSH", names=("QUESTION", "QUES", "?"))
 
-test('International')
+test("International")
 make_key(code=50, names=("NONUS_HASH", "NUHS"))
 make_key(code=100, names=("NONUS_BSLASH", "NUBS"))
 make_key(code=101, names=("APP", "APPLICATION", "SEL", "WINMENU"))
@@ -254,7 +254,7 @@ make_key(code=151, names=("LANG8",))
 make_key(code=152, names=("LANG9",))
 make_key(code=181, names=("ACCENT", "ACC"))
 
-test('Consumer')
+test("Consumer")
 make_key(key_type=KEY_CONSUMER, code=226, names=("AUDIO_MUTE", "MUTE"))  # ('0xE2
 make_key(key_type=KEY_CONSUMER, code=233, names=("AUDIO_VOL_UP", "VOLU"))  # ('0xE9
 make_key(key_type=KEY_CONSUMER, code=234, names=("AUDIO_VOL_DOWN", "VOLD"))  # ('0xEA
@@ -263,10 +263,12 @@ make_key(key_type=KEY_CONSUMER, code=182, names=("MEDIA_PREV_TRACK", "MPRV"))  #
 make_key(key_type=KEY_CONSUMER, code=183, names=("MEDIA_STOP", "MSTP"))  # ('0xB7
 make_key(key_type=KEY_CONSUMER, code=205, names=("MEDIA_PLAY_PAUSE", "MPLY"))  # ('0xCD
 make_key(key_type=KEY_CONSUMER, code=184, names=("MEDIA_EJECT", "EJCT"))  # ('0xB8
-make_key(key_type=KEY_CONSUMER, code=179, names=("MEDIA_FAST_FORWARD", "MFFD"))  # ('0xB3
+make_key(
+    key_type=KEY_CONSUMER, code=179, names=("MEDIA_FAST_FORWARD", "MFFD")
+)  # ('0xB3
 make_key(key_type=KEY_CONSUMER, code=180, names=("MEDIA_REWIND", "MRWD"))  # ('0xB4
 
-test('RGB')
+test("RGB")
 make_key(1000, names=("RGB_TOG",))
 make_key(1001, names=("RGB_HUI",))
 make_key(1002, names=("RGB_HUD",))
@@ -284,7 +286,7 @@ make_key(1013, names=("RGB_MODE_SWIRL", "RGB_MS"))
 make_key(1014, names=("RGB_MODE_KNIGHT", "RGB_MK"))
 make_key(1015, names=("RGB_LIGHT_SHOW", "RGB_LS"))
 
-test('Layers')
+test("Layers")
 make_key(1016, key_type=KEY_LAYER, names=("MO",))
 make_key(1017, key_type=KEY_LAYER, names=("DF",))
 make_key(1018, key_type=KEY_LAYER, names=("LM",))

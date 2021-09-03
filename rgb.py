@@ -4,14 +4,17 @@ Metrhod:
 Returns:
     Should never ends"""
 import time
+
 # pylint: disable=import-error
 import board
 import neopixel
+
 # pylint: enable=import-error
 
 
 class RGB:
     """RGB underglow with neopixels"""
+
     pin = board.GP28
     time = int(time.monotonic() * 10)
     intervals = (30, 20, 10, 5)
@@ -39,7 +42,9 @@ class RGB:
         self.animation_speed = 0.2
         self.user_animation = "user"
         self.intervals = (30, 20, 10, 5)
-        self.neopixel = neopixel.NeoPixel(self.pin, self.num_pixels, brightness=self.val, auto_write=True)
+        self.neopixel = neopixel.NeoPixel(
+            self.pin, self.num_pixels, brightness=self.val, auto_write=True
+        )
         self.go()
 
     def __call__(self, *args, **kwds):
@@ -152,7 +157,9 @@ class RGB:
         self.hue = (self.hue + self.animation_speed) % 360
         self.disable_auto_write = True  # Turn off instantly showing
         for i in range(0, self.num_pixels):
-            self.set_hsv((self.hue - (i * self.num_pixels)) % 360, self.sat, self.val, i)
+            self.set_hsv(
+                (self.hue - (i * self.num_pixels)) % 360, self.sat, self.val, i
+            )
         # Show final results
         self.disable_auto_write = False  # Resume showing changes
         self.show()

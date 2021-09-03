@@ -1,7 +1,9 @@
 """Keyboard matrix"""
 import time
+
 # pylint: disable=import-error
 import digitalio
+
 # pylint: enable=import-error
 
 
