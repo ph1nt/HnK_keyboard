@@ -3,7 +3,7 @@ import math
 
 
 def sleep_ms(ms):
-    ''' sleep for a number of milliseconds '''
+    """sleep for a number of milliseconds"""
     return time.sleep(ms / 1000)
 
 

@@ -49,4 +49,3 @@ keymap = [
     ],
 ]
 # fmt: on
-
