@@ -15,6 +15,7 @@ TO(layer) - activates layer and de-activates all other layers (except your defau
         it will completely replace your current active layers, uniquely allowing you to replace higher layers with a lower one.
         This is activated on keydown (as soon as the key is pressed).
 """
+
 from ktime import ticks_diff, ticks_ms
 
 
@@ -33,7 +34,8 @@ def mo_pressed(key, state, *args, **kwargs):
 def mo_released(key, state, KC, *args, **kwargs):
     """remove the first instance of the target layer from the active list
     under almost all normal use cases, this will disable the layer also resolves an issue where using DF()
-    on a layer triggered by MO() and then defaulting to the MO()'s layer would result in no layers active"""
+    on a layer triggered by MO() and then defaulting to the MO()'s layer would result in no layers active
+    """
     try:
         del_idx = state.active_layers.index(key.meta.layer)
         del state.active_layers[del_idx]
