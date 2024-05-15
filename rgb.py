@@ -3,6 +3,7 @@ Metrhod:
     go() make animation step
 Returns:
     Should never ends"""
+
 import time
 
 # pylint: disable=import-error

@@ -1,4 +1,5 @@
 """Keyboard matrix"""
+
 import time
 
 # pylint: disable=import-error
