@@ -9,15 +9,16 @@
         "python.linting.pylintEnabled": false,
         "python.pythonPath": "/usr/local/bin/python",
         "python.analysis.extraPaths": [
-            "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.1.13/boards/0x239A/0x80F4",
-            "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.1.13/stubs",
-            "/Users/peter/Library/Application Support/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20210715/adafruit-circuitpython-bundle-py-20210715/lib"
+            "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.2.0-darwin-arm64/boards/0x239A/0x80F4",
+            "/Users/peter/.vscode/extensions/joedevivo.vscode-circuitpython-0.2.0-darwin-arm64/stubs",
+            "/Users/peter/Library/Application Support/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20251014/adafruit-circuitpython-bundle-py-20251014/lib"
         ],
         "circuitpython.board.version": null,
         "circuitpython.board.vid": "0x239A",
         "circuitpython.board.pid": "0x80F4",
         "python.analysis.diagnosticSeverityOverrides": {
-            "reportMissingModuleSource": "none"
+            "reportMissingModuleSource": "none",
+            "reportShadowedImports": "none"
         }
     }
 }
